@@ -1,0 +1,7 @@
+
+
+docker compose down -v
+
+
+./infra/postgres/data:/var/lib/postgresql/data
+

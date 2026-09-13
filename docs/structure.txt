@@ -1,0 +1,93 @@
+
+com.market.ecommerce
+│
+├── EcommerceApplication
+│
+│
+├── shared
+│   ├── configuration
+│   │   └── TimeConfiguration
+│   │
+│   └── domain
+│       ├── AggregateRoot
+│       │
+│       ├── event
+│       │   ├── DomainEvent
+│       │   └── DomainEventId
+│       │
+│       └── valueobject
+│           ├── CurrencyCode
+│           ├── Money
+│           ├── ProductId
+│           ├── Quantity
+│           └── UnitPrice
+│
+├── catalog
+│   ├── domain
+│   │   ├── Product
+│   │   ├── ProductName
+│   │   ├── ProductStatus
+│   │   └── Sku
+│   │
+│   ├── application
+│   │   ├── port
+│   │   │   ├── in
+│   │   │   │   └── ProductCatalogUseCase
+│   │   │   └── out
+│   │   │       └── ProductRepository
+│   │   └── service
+│   │       └── ProductCatalogService
+│   │
+│   └── adapter
+│       ├── in/web
+│       │   ├── ProductController
+│       │   └── ProductResponse
+│       └── out/persistence/jdbc
+│           └── JdbcProductRepository
+│
+└── order
+    ├── domain
+    │   ├── CustomerId
+    │   ├── EmailAddress
+    │   ├── Order
+    │   ├── OrderId
+    │   ├── OrderItem
+    │   ├── OrderItemCandidate
+    │   ├── OrderItemId
+    │   ├── OrderProductName
+    │   ├── OrderStatus
+    │   └── event
+    │       └── OrderPlacedDomainEvent
+    │
+    ├── application
+    │   ├── port
+    │   │   ├── in
+    │   │   │   ├── CreateOrderUseCase
+    │   │   │   └── GetOrderUseCase
+    │   │   └── out
+    │   │       ├── DomainEventOutbox
+    │   │       ├── OrderRepository
+    │   │       └── ProductSnapshotProvider
+    │   │
+    │   └── service
+    │       ├── CreateOrderService
+    │       └── GetOrderService
+    │
+    └── adapter
+        ├── in/web
+        │   ├── ApiExceptionHandler
+        │   ├── CreateOrderRequest
+        │   ├── OrderController
+        │   └── OrderResponse
+        │
+        └── out
+            ├── catalog
+            │   └── LocalCatalogProductSnapshotAdapter
+            ├── event
+            │   └── JdbcDomainEventOutbox
+            └── persistence/jdbc
+                └── JdbcOrderRepository
+
+
+
+
