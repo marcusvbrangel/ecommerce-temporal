@@ -44,10 +44,14 @@ public class JdbcProductRepository implements ProductRepository {
                 order by name
                 """;
 
-        return jdbcClient
+
+
+        List<Product> lista = jdbcClient
                 .sql(sql)
                 .query(rowMapper)
                 .list();
+
+        return lista;
 
     }
 

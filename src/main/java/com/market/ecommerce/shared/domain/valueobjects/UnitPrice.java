@@ -8,7 +8,7 @@ public record UnitPrice(Money value) {
 
         Objects.requireNonNull(value, "Unit price is required");
 
-        if (!value().isPositive()) {
+        if (!value.isPositive()) {
             throw new IllegalArgumentException("Unit price must be greater than zero");
         }
 
