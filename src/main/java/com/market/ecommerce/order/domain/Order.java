@@ -178,12 +178,112 @@ public final class Order extends AggregateRoot {
 
     }
 
+    /*
+     * Reconstitution from the database.
+     *
+     * Does NOT trigger an event.
+     */
 
+    public static Order restore(
+            OrderId orderId,
+            CustomerId customerId,
+            EmailAddress customerEmail,
+            OrderStatus status,
+            List<OrderItem> items,
+            Money persistedTotal,
+            Instant placedAt,
+            Instant updatedAt
+    ) {
 
+        Order order = new Order(
+            orderId,
+            customerId,
+            customerEmail,
+            status,
+            items,
+            persistedTotal,
+            placedAt,
+            updatedAt
+        );
 
+        /*
+         * We also validate integrity
+         * when rehydrating.
+         */
 
+        Money recalculated = order.calculateTotal();
+
+        if (!recalculated.equals(persistedTotal)) {
+
+            throw new IllegalStateException("Persisted order total does not match item total");
+
+        }
+
+        return order;
+
+    }
 
     private void validateAggregateInvariants() {
+
+        if (items.isEmpty()) {
+
+            throw new IllegalArgumentException("Order must contain at least one item");
+
+        }
+
+        Set<ProductId> products = new HashSet<>();
+
+        CurrencyCode currency = items
+                .getFirst()
+                .unitPrice()
+                .value()
+                .currency();
+
+        for (OrderItem item : items) {
+
+            if (!products.add(item.productId())) {
+
+                throw new IllegalArgumentException("Order cannot contain duplicate products");
+
+            }
+
+            CurrencyCode itemCurrency = item
+                    .unitPrice()
+                    .value()
+                    .currency();
+
+            if (!currency.equals(itemCurrency)) {
+
+                throw new IllegalArgumentException("Order cannot contain multiple currencies");
+
+            }
+
+        }
+
+        if (!total.isPositive()) {
+
+            throw new IllegalArgumentException("Order total must be positive");
+
+        }
+
+    }
+
+    private Money calculateTotal() {
+
+        CurrencyCode currency = items
+                .getFirst()
+                .unitPrice()
+                .value()
+                .currency();
+
+        return items
+                .stream()
+                .map(OrderItem::subtotal)
+                .reduce(
+                        Money.zero(currency),
+                        Money::add
+                );
+
     }
 
     public OrderId id() {
