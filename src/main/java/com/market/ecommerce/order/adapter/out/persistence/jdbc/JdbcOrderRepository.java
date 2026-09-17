@@ -126,7 +126,7 @@ public class JdbcOrderRepository implements OrderRepository {
                     total_currency,
                     placed_at,
                     updated_at
-                FROM orders
+                FROM orders.orders
                 WHERE id = :id
                 """;
 
@@ -185,7 +185,7 @@ public class JdbcOrderRepository implements OrderRepository {
                     unit_price_amount,
                     unit_price_currency,
                     quantity
-                FROM order_items
+                FROM orders.order_items
                 WHERE order_id = :orderId
                 ORDER BY id
                 """;
